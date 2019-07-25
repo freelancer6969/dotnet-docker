@@ -105,10 +105,11 @@ namespace Microsoft.DotNet.Docker.Tests
 
             try
             {
+                string restoreOption = _imageData.Version.Major > 1 ? " --no-restore" : string.Empty;
                 _dockerHelper.Run(
                     image: _imageData.GetImage(DotNetImageType.SDK, _dockerHelper),
                     name: containerName,
-                    command: $"dotnet new {appType} --framework netcoreapp{_imageData.Version}",
+                    command: $"dotnet new {appType} --framework netcoreapp{_imageData.Version}{restoreOption}",
                     workdir: "/app",
                     skipAutoCleanup: true);
 
@@ -163,6 +164,7 @@ namespace Microsoft.DotNet.Docker.Tests
                     image: image,
                     name: containerName,
                     detach: _isWeb,
+                    optionalRunArgs: _isWeb ? "-p 80" : string.Empty,
                     runAsContainerAdministrator: runAsAdmin,
                     command: command);
 
